@@ -23,3 +23,4 @@ This would mean that clients would not have to worry about malicious spoofing of
 In the future we can create a more robust architecture to deal with the other DNS records. Also there are more options that could be added to create more security by utilizing more of the functionality of MDN proto.
 
 ##### Project Architecture
+![Project Architecture](./5360_Project_Architecture.jpeg)
