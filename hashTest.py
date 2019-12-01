@@ -4,10 +4,10 @@
 # m = hashlib.md5(text.encode('utf-8'))
 # print(m.hexdigest())
 
-from Crypto.Cipher import AES
+from Cryptodome.Cipher import AES
 from base64 import *
 
-MASTER_KEY="MDS is cool!"
+MASTER_KEY="MDN is cool!"
 
 def encrypt_val(clear_text):
     enc_secret = AES.new(MASTER_KEY[:32])
@@ -25,4 +25,7 @@ def decrypt_val(cipher_text):
     return clear_val
 
 if __name__ == "__main__":
-    print(decrypt_val(encrypt_val("Test")))
+    text = "Test"
+    eVal = encrypt_val(text)
+    dval = decrypt_val(eVal)
+    print(dval)
