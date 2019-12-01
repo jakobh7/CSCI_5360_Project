@@ -6,7 +6,7 @@ import os
 
 class AESEncrypt(object):
 
-    def __init__(self, BLOCK_SIZE, PADDING):
+    def __init__(self, BLOCK_SIZE, PADDING, SECRET):
         # the block size for the cipher object; must be 16, 24, or 32 for AES
         self.BLOCK_SIZE = BLOCK_SIZE
 
@@ -14,9 +14,7 @@ class AESEncrypt(object):
         # you encrypt must be a multiple of BLOCK_SIZE in length.  This character is
         # used to ensure that your value is always a multiple of BLOCK_SIZE
         self.PADDING = PADDING
-
-        # generate a random secret key
-        self.secret = os.urandom(BLOCK_SIZE)
+        self.SECRET = SECRET
 
     # one-liner to sufficiently pad the text to be encrypted
     def pad(self, s):
@@ -27,20 +25,20 @@ class AESEncrypt(object):
     # encrypt with AES, encode with base64
     def encode(self, input):
         # create a cipher object using the secret
-        cipher = AES.new(self.secret, AES.MODE_ECB)
+        cipher = AES.new(self.SECRET, AES.MODE_ECB)
         # encode a string
         encryptData = base64.b64encode(cipher.encrypt(self.pad(input)))
         return encryptData
 
     def decode(self, encryptedString):
-        cipher = AES.new(self.secret, AES.MODE_ECB)
+        cipher = AES.new(self.SECRET, AES.MODE_ECB)
         decryptData = str(cipher.decrypt(base64.b64decode(encryptedString)), 'utf-8').rstrip(self.PADDING)
         return decryptData
 
 if __name__ == '__main__':
-    crypto = AESEncrypt(32, '{')
+    crypto = AESEncrypt(32, '{', b"5VVMUS6P89TNH2AHD178KG2S7QIE7ICJ")
     # print(crypto.BLOCK_SIZE)
     encrypted = crypto.encode("HOW MUCH MORE CAN I ENCODE???")
-    print(base64.b64decode(encrypted), 'utf-8')
+    print(encrypted)
     decrypted = crypto.decode(encrypted)
     print(decrypted)
