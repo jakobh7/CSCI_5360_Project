@@ -4,7 +4,6 @@ connection = pymysql.connect(
    host='localhost',
    user='root',
    password='',
-   db='dns',
 )
 
 if __name__ == '__main__':
