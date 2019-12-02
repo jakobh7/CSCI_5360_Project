@@ -6,4 +6,4 @@ from http import client
 conn = client.HTTPConnection("localhost", 8080)
 conn.request("GET", "/")
 response = conn.getresponse()
-print(response)
+print(response.read())
