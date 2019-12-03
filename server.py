@@ -1,4 +1,3 @@
-#code from PubNub blog https://www.pubnub.com/blog/socket-programming-in-python-client-server-p2p/
 from socket import *
 from io import BytesIO
 from http import server
@@ -27,34 +26,34 @@ class RequestHandler(server.BaseHTTPRequestHandler):
         if not namefound:
             error_code = 400
             returnjson["Error"] = "Request Formatted improperly"
-
-        try:
-            connection = pymysql.connect(
-               host='localhost',
-               user='root',
-               password='',
-               db='dns',
-            )
-            with connection.cursor() as cursor:
-                sql = f"SELECT * FROM records WHERE `name` = \"{name}\""
-                print("Select Query: ", sql)
-                try:
-                    linesreturned = cursor.execute(sql)
-                    if linesreturned == 1:
-                       returnvalue = cursor.fetchall()
-                       for line in returnvalue:
-                          returnjson["name"] = line[0]
-                          returnjson["ipaddress"] = line[1]
-                    else:
-                       error_code = 404
-                       returnjson["Error"] = "Hostname not found in DNS database"
-                except:
-                    print("SQL error")
-                    error_code = 500
-                    returnjson["Error"] = "SQL connection issue"
-                connection.commit()
-        finally:
-            connection.close()
+        else:
+           try:
+               connection = pymysql.connect(
+                  host='localhost',
+                  user='root',
+                  password='',
+                  db='dns',
+               )
+               with connection.cursor() as cursor:
+                   sql = f"SELECT * FROM records WHERE `name` = \"{name}\""
+                   print("Select Query: ", sql)
+                   try:
+                       linesreturned = cursor.execute(sql)
+                       if linesreturned == 1:
+                          returnvalue = cursor.fetchall()
+                          for line in returnvalue:
+                             returnjson["name"] = line[0]
+                             returnjson["ipaddress"] = line[1]
+                       else:
+                          error_code = 404
+                          returnjson["Error"] = "Hostname not found in DNS database"
+                   except:
+                       print("SQL error")
+                       error_code = 500
+                       returnjson["Error"] = "SQL connection issue"
+                   connection.commit()
+           finally:
+               connection.close()
 
         self.send_content(returnjson, error_code)
 
