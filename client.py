@@ -4,6 +4,6 @@ from io import BytesIO
 from http import client
 
 conn = client.HTTPConnection("localhost", 8080)
-conn.request("GET", "/")
+conn.request("GET", "/?name=slu.edu")
 response = conn.getresponse()
-print(response.read())
+print(response.read().decode('utf-8'))

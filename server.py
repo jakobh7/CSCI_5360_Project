@@ -5,23 +5,61 @@ from http import server
 import pymysql
 import json
 
-connection = pymysql.connect(
-   host='localhost',
-   user='root',
-   password='',
-   db='dns',
-)
-
-##sql = f"INSERT INTO records (`Name`, `Value`, `Type`, `TTL`) VALUES (\"{record_name}\", \"{record_value}\", \"{record_type}\", {record_TTL})"
-
 class RequestHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
-        print(self.path)
-        ##TODO: Implement parsing get request and SQL queries to data
-        self.send_content({'foo':'bar'})
+        name = ""
+        namefound = False
+        returnvalue = ""
+        linesreturned = -1
+        error_code = 200
+        returnjson = {}
 
-    def send_content(self, content):
-        self.send_response(200)
+        request_data = self.path[1:]
+        values = request_data.split('?')
+
+        for value in values:
+            print(value)
+            key_value = value.split('=')
+            if(key_value[0]=="name"):
+                name = key_value[1]
+                namefound = True
+
+        if not namefound:
+            error_code = 400
+            returnjson["Error"] = "Request Formatted improperly"
+
+        try:
+            connection = pymysql.connect(
+               host='localhost',
+               user='root',
+               password='',
+               db='dns',
+            )
+            with connection.cursor() as cursor:
+                sql = f"SELECT * FROM records WHERE `name` = \"{name}\""
+                print("Select Query: ", sql)
+                try:
+                    linesreturned = cursor.execute(sql)
+                    if linesreturned == 1:
+                       returnvalue = cursor.fetchall()
+                       for line in returnvalue:
+                          returnjson["name"] = line[0]
+                          returnjson["ipaddress"] = line[1]
+                    else:
+                       error_code = 404
+                       returnjson["Error"] = "Hostname not found in DNS database"
+                except:
+                    print("SQL error")
+                    error_code = 500
+                    returnjson["Error"] = "SQL connection issue"
+                connection.commit()
+        finally:
+            connection.close()
+
+        self.send_content(returnjson, error_code)
+
+    def send_content(self, content, error_code=200):
+        self.send_response(error_code)
         self.send_header("Content-type", "application/json")
         self.send_header("Content-length", str(len(json.dumps(content))))
         self.end_headers()
