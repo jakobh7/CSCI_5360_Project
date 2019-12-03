@@ -16,7 +16,7 @@ class AESEncrypt(object):
         self.PADDING = PADDING
         self.SECRET = SECRET
 
-    # one-liner to sufficiently pad the text to be encrypted
+    # function to sufficiently pad the text to be encrypted
     def pad(self, s):
         pad = (s + (self.BLOCK_SIZE - len(s) % self.BLOCK_SIZE) * self.PADDING).encode('utf-8')
         return pad
