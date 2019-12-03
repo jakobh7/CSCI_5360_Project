@@ -16,13 +16,14 @@ connection = pymysql.connect(
 
 class RequestHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
+        print(self.path)
         ##TODO: Implement parsing get request and SQL queries to data
         self.send_content({'foo':'bar'})
 
     def send_content(self, content):
         self.send_response(200)
         self.send_header("Content-type", "application/json")
-        self.send_header("Content-length", str(len(content)))
+        self.send_header("Content-length", str(len(json.dumps(content))))
         self.end_headers()
         self.wfile.write(json.dumps(content).encode('utf-8'))
 
