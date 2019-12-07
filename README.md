@@ -1,3 +1,10 @@
+# Usage
+Download and install XAMPP https://www.apachefriends.org/index.html  
+Run xampp-control and start Apache and mySQL  
+Click Admin next to mySQL to open the database page  
+Create a database called 'dns' and import dns.sql  
+Run server.py and client.py on seperate terminals  
+
 # Project Abstract
 
 ### Context
